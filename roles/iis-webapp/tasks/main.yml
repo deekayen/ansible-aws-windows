@@ -1,0 +1,42 @@
+---
+
+- block:
+
+  - name: "Install IIS, roles, and features."
+    win_feature:
+      name: "{{ iis_roles_features }}"
+      state: present
+      restart: no
+      include_sub_features: no
+      include_management_tools: no
+    notify: restart iis
+
+  when: iis_roles_features is defined
+
+- name: "Create ping directory."
+  win_file:
+    path: c:\inetpub\ping
+    state: directory
+
+- name: "Create a default response page."
+  win_copy:
+    src: "{{ role_path }}/files/default.aspx"
+    dest: c:\inetpub\ping\default.aspx
+
+- name: "Create ping web application."
+  win_iis_webapplication:
+    name: ping
+    physical_path: c:\inetpub\ping
+    site: Default Web Site
+
+- name: "Test ping web application."
+  uri:
+    url: http://{{ ansible_host }}/ping
+    return_content: yes
+  register: uri_out
+  delegate_to: localhost
+  until: uri_out.content | search("Pong from")
+  retries: 3
+
+- debug:
+    msg: Web application is available at http://{{ ansible_host }}/ping

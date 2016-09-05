@@ -1,0 +1,5 @@
+---
+
+- name: "Install python-boto package."
+  apt: name=python-boto state=present
+  become: True

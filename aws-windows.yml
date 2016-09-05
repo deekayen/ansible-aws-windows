@@ -1,0 +1,14 @@
+---
+
+- name: "Launch Windows AMI."
+  hosts: localhost
+
+  roles:
+  - aws-windows
+
+- name: "Setup web application."
+  hosts: windows
+
+  roles:
+  - iis-webapp
+  - deekayen.tls
