@@ -1,9 +1,9 @@
 ---
 
-- include: awscli_debian.yml
+- include: boto_debian.yml
   when: ansible_os_family == "Debian"
 
-- include: awscli_macos.yml
+- include: boto_macos.yml
   when: ansible_os_family == "Darwin"
 
 - name: "Find current, region-specific Windows AMI."
